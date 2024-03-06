@@ -21,7 +21,7 @@ dotenv.config();
 
 
 //Assuming you have a MongoDB URI stored in an environment variable
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URL;
 
 // Check if the URI is defined and is a string
 // if (!uri || typeof uri !== 'string') {
