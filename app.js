@@ -24,10 +24,10 @@ dotenv.config();
 const uri = process.env.MONGODB_URI;
 
 // Check if the URI is defined and is a string
-if (!uri || typeof uri !== 'string') {
-  console.error('MongoDB URI is undefined or not a string');
-  process.exit(1);
-}
+// if (!uri || typeof uri !== 'string') {
+//   console.error('MongoDB URI is undefined or not a string');
+//   process.exit(1);
+// }
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
