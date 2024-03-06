@@ -21,11 +21,11 @@ dotenv.config();
 
 
 //Assuming you have a MongoDB URI stored in an environment variable
-// const uri = process.env.MONGODB_URL;
-const url = 'mongodb+srv://officialdhananjay76:ezrXHh0damAooawM@ecom-build-cluster0.w8flzi7.mongodb.net/?retryWrites=true&w=majority&appName=ecom-build-cluster0'
+ const url = process.env.MONGODB_URL;
+
 
 // Check if the URI is defined and is a string
-// if (!uri || typeof uri !== 'string') {
+// if (!url || typeof url !== 'string') {
 //   console.error('MongoDB URI is undefined or not a string');
 //   process.exit(1);
 // }
