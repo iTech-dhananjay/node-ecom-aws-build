@@ -53,6 +53,10 @@ app.use('/warehouse', warehouse);
 app.use('/orders', orders);
 app.use('/aggregate', aggregate);
 
+app.get('/test',(req,res)=>{
+    res.send('Aws build with node.js')
+
+})
 
 app.listen(process.env.PORT, function () {
      console.log(`listening on ${process.env.PORT}`);
