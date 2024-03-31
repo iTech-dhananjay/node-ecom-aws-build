@@ -1,0 +1,52 @@
+# Define variables for deployment
+variables:
+  NODE_ENV: "production" # Set the Node environment to production
+  SSH_PRIVATE_KEY: $EC2_SSH_PRIVATE_KEY # Define the SSH private key variable
+  SSH_KNOWN_HOSTS: $EC2_SSH_KNOWN_HOSTS # Define the SSH known hosts variable
+
+# Define job for building the Node.js application and creating Docker image
+docker-build:
+  stage: build
+  image:
+    name: docker:latest # Use Docker image for building
+    entrypoint: [""]
+  services:
+    - docker:dind # Use Docker-in-Docker service
+  script:
+    # Build Docker image with the provided Dockerfile
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
+    # Push Docker image to GitLab Container Registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+# Define job for deploying the application to EC2 instance
+nodejs-deploy:
+  stage: deploy
+  image: amazonlinux:latest # Use Amazon Linux Docker image for deploying
+  before_script:
+    # Install SSH client and configure known hosts
+    - yum update -y && yum install -y openssh-clients
+    - mkdir -p ~/.ssh && echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+  script:
+    # Deploy the application to your EC2 instance using SCP
+    - scp -r ./dist/* username@ec2-instance-ip:/path/to/project
+
+# Define job for triggering Kubernetes restart after deployment
+kubernetes-restart:
+  stage: post-deploy
+  script:
+    - wget "https://kuberestart.kloudlite.io/hook/restart/$KUBECONFIG/$NAMESPACE/$DEPLOYMENT_NAME"
+
+# Define job dependencies
+# Ensure that the deployment job runs only after the build job is successful
+# The Kubernetes restart job runs after the deployment job
+dependencies:
+  - docker-build
+  - nodejs-deploy
+  - kubernetes-restart
+
+# Run deployment job only on the master branch
+# Adjust the branch name if needed
+only:
+  - master

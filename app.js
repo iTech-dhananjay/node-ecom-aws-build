@@ -21,7 +21,7 @@ dotenv.config();
 
 
 //Assuming you have a MongoDB URI stored in an environment variable
- const url = process.env.MONGODB_URL;
+ const url = process.env.MONGODB_LOCAL_URL
 
 
 // Check if the URI is defined and is a string
